@@ -6,7 +6,7 @@ jobs:
       # Primary container image where all steps run
       - image: buildpack-deps:trusty
       # Secondary container image on common network , it's called side car image or service container
-      - image: mongo:2.6.8-jessie
+      - image: mongo:latest
         command: [mongod, --smallfiles]
   
     working_directory: ~/
