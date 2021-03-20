@@ -1,36 +1,72 @@
 version: 2.1
-
+# Fan in/Fan out job execution
 jobs:
   build:
     docker:
-      # Primary container image where all steps run
-      - image: buildpack-deps:trusty
-      # Secondary container image on common network , it's called side car image or service container
-      - image: mongo:2.6.8-jessie
-        command: [mongod, --smallfiles]
-  
-    working_directory: ~/
-
+      - image: 'circleci/python:latest'
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
     steps:
-    # command will execute in trusty container
-    # and can access mongo on localhost
-      - run: sleep 5 && nc -vz localhost 27017
+      - checkout
+      - run: echo 'hello world from the build step'
 
+  accept_test_1:
+    docker:
+      - image: 'circleci/python:latest'
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run: echo 'hello world from the accept_test_1 step'
 
-# workflows:
-#   test-deploy:
-#     jobs:
-#       - test
+  accept_test_2:
+    docker:
+      - image: 'circleci/python:latest'
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run: echo 'hello world from the accept_test_2 step'
 
-# jobs:
-#   test:
-#     docker:
-#       - image: cimg/node:15.8.0
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: npm install
-#       - run:
-#           name: Run tests
-#           command: npm run test
+  accept_test_3:
+    docker:
+      - image: 'circleci/python:latest'
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run: echo 'hello world from the accept_test_3 step'    
+  
+  deploy:
+    docker:
+      - image: 'circleci/python:latest'
+        auth:
+          username: $DOCKERHUB_USERNAME
+          password: $DOCKERHUB_PASSWORD
+    steps:
+      - checkout
+      - run: echo 'This step is run only when all 3 accept tests are successfully completed'
+
+workflows:
+  version: 2
+  build-accept-deploy:
+    jobs:
+      - build
+      - accept_test_1:
+          requires:
+            - build
+      - accept_test_2:
+          requires:
+            - build
+      - accept_test_3:
+          requires:
+            - build      
+      - deploy:
+          requires:
+            - accept_test_1
+            - accept_test_2
+            - accept_test_3
