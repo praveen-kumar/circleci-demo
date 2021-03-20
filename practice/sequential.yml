@@ -5,57 +5,54 @@ jobs:
     docker:
       - image: 'circleci/python:latest'
         auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+          username:
+          password:
     steps:
       - checkout
       - run: echo 'hello world from the build step'
 
-  test_1:
+  test1:
     docker:
       - image: 'circleci/python:latest'
         auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+          username:
+          password:
     steps:
       - checkout
-      - run: echo 'hello world from the test_1 step'
+      - run: echo 'hello world from the test1 step'
 
-  test_2:
+  test2:
     docker:
       - image: 'circleci/python:latest'
         auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+          username:
+          password:
     steps:
       - checkout
-      - run: echo 'hello world from the test_2 step'
+      - run: echo 'hello world from the test2 step'
   
   deploy:
     docker:
       - image: 'circleci/python:latest'
         auth:
-          username: $DOCKERHUB_USERNAME
-          password: $DOCKERHUB_PASSWORD
+          username:
+          password:
     steps:
       - checkout
       - run: echo 'hello world from the deploy step'
 
 workflows:
   version: 2
-  build-test-approval-deploy:
+  build-test-deploy:
     jobs:
       - build
-      - test_1:
+      - test1:
           requires:
             - build
-      - test_2:
+      - test2:
           requires:
-            - test_1
-      - hold:
-          type: approval
-          requires:
-            - test_2      
+            - test1
       - deploy:
           requires:
-            - hold
+            - test2
+

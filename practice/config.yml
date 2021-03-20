@@ -1,0 +1,37 @@
+version: 2.1
+# this allows us to use all the latest features
+
+jobs:
+  build:
+    # docker key specifies that we would like to use docker containers to build our image
+    # using docker improves the performance
+    # It's also possible to specify multiple jobs within a single job
+    docker:
+      # Primary container image where all steps run
+      - image: buildpack-deps:trusty
+      # Secondary container image on common network , it's called side car image or service container
+      - image: mongo:2.6.8-jessie
+        command: [mongod, --smallfiles]
+
+# there are 4 types of executors -  docker machine with docker images
+# linux VM machine with machine executor - folks looking for VM based executions
+# macOS VM machine with macos executor
+# windows VM machine with windows executor
+
+# version: 2.1
+
+# jobs:
+#   build:
+#     docker:
+#       # Primary container image where all steps run
+#       - image: buildpack-deps:trusty
+#       # Secondary container image on common network , it's called side car image or service container
+#       - image: mongo:2.6.8-jessie
+#         command: [mongod, --smallfiles]
+  
+#     working_directory: ~/
+
+#     steps:
+#     # command will execute in trusty container
+#     # and can access mongo on localhost
+#       - run: sleep 5 && nc -vz localhost 27017
